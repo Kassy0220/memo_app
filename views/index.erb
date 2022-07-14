@@ -8,7 +8,7 @@
   <h1>メモ一覧</h1>
   <ul>
   <% @memos.each do |memo| %>
-    <li><a href="/memos/<%= memo['id'] %>"><%= memo['title'] %></a></li>
+    <li><a href="/memos/<%= memo[:id] %>"><%= memo[:title] %></a></li>
   <% end %>
   </ul>
 
