@@ -7,28 +7,9 @@ require 'json'
 require_relative 'memo_class'
 
 get '/memos' do
-  # メモ一覧表示
-end
+  @memos = File.open('memos.json') { |file| JSON.load(file) }
 
-get '/:memo_id' do
-  memos = File.open('memos.json') do |file|
-    JSON.load(file)
-  end
-  @memo = memos.find { |memo| memo['id'] == params[:memo_id] }
-  
-  erb :detail
-end
-
-get '/:memo_id/edit' do
-  # メモ編集ページを表示
-end
-
-patch '/:memo_id' do
-  # メモ更新処理
-end
-
-delete '/:memo_id' do
-  # メモ削除処理
+  erb :index
 end
 
 get '/memos/new' do
@@ -45,5 +26,24 @@ post '/' do
     File.open('memos.json', 'w') { |file| JSON.dump(memo_array, file) }
   end
 
-  redirect to("/#{memo.id}")
+  redirect to("/memos/#{memo.id}")
+end
+
+get '/memos/:memo_id' do
+  memos = File.open('memos.json') { |file| JSON.load(file) }
+  @memo = memos.find { |memo| memo['id'] == params[:memo_id] }
+
+  erb :detail
+end
+
+get '/memos/:memo_id/edit' do
+  # メモ編集ページを表示
+end
+
+patch '/memos/:memo_id' do
+  # メモ更新処理
+end
+
+delete '/memos/:memo_id' do
+  # メモ削除処理
 end
