@@ -12,5 +12,10 @@
 
   <a href="/memos">メモ一覧</a>
   <a href="/memos/<%= @memo[:id] %>/edit">変更</a>
+  
+  <form method="POST" action="/memos/<%= @memo[:id] %>">
+    <input type="hidden" name="_method" value="delete">
+    <input type="submit" value="削除">
+  </form>
 </body>
 </html>

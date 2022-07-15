@@ -57,5 +57,9 @@ patch '/memos/:memo_id' do
 end
 
 delete '/memos/:memo_id' do
-  # メモ削除処理
+  memos = File.open('memos.json') { |file| JSON.parse(file.read, symbolize_names: true) }
+  removed_memos = memos.delete_if{ |memo| memo[:id] == params[:memo_id]}
+  File.open('memos.json', 'w') { |file|  JSON.dump(removed_memos, file)}
+
+  redirect to("/memos")
 end
