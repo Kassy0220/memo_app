@@ -7,7 +7,9 @@ require 'json'
 require_relative 'memo_class'
 
 get '/memos' do
-  @memos = File.open('memos.json') { |file| JSON.parse(file.read, symbolize_names: true) }
+  @memos = File.open('memos.json') do |file| 
+    FileTest.empty?('memos.json')? nil : JSON.parse(file.read, symbolize_names: true)
+  end
 
   erb :index
 end
@@ -20,7 +22,7 @@ post '/' do
   memo = Memo.new(params[:title], params[:content])
   File.open('memos.json') do |file|
     # メモ格納ファイルが空の場合は、空配列を用意する
-    memo_array = JSON.parse(file.read, symbolize_names: true) || []
+    memo_array = FileTest.empty?('memos.json')? [] : JSON.parse(file.read, symbolize_names: true)
     memo_hash = {id: memo.id, title: memo.title, content: memo.content, created_at: memo.created_at, updated_at: memo.updated_at}
     memo_array << memo_hash
     File.open('memos.json', 'w') { |file| JSON.dump(memo_array, file) }
