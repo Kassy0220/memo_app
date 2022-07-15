@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>メモ作成</title>
+</head>
+<body>
+  <h1>メモ作成</h1>
+
+  <form method="POST" action="/memos/<%= @memo[:id] %>">
+    <input type="hidden" name="_method" value="patch">
+    
+    <label for="title">タイトル</label>
+    <input type="text" name="title" id="title" value="<%= @memo[:title] %>">
+
+    <label for="content">内容</label>
+    <textarea name="content" id="content"><%= @memo[:content] %></textarea>
+
+    <input type="submit" value="変更">
+  </form>
+
+  <a href="/memos">メモ一覧</a>
+</body>
+</html>
