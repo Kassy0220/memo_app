@@ -20,6 +20,9 @@ get '/memos/new' do
 end
 
 post '/' do
+  # 入力された値が空でないかバリデーションを行う
+  redirect to("/memos/new") if params[:title].empty? || params[:content].empty?
+
   memo = Memo.new(params[:title], params[:content])
   File.open('memos.json') do |file|
     # メモ格納ファイルが空の場合は、空配列を用意する
@@ -47,6 +50,8 @@ get '/memos/:memo_id/edit' do
 end
 
 patch '/memos/:memo_id' do
+  redirect to("/memos/#{params[:memo_id]}") if params[:title].empty? || params[:content].empty?
+
   memos = File.open('memos.json') { |file| JSON.parse(file.read, symbolize_names: true) }
   memos.each do |memo|
     next unless memo[:id] == params[:memo_id]
