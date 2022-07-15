@@ -9,5 +9,8 @@
   <p><%= @memo[:title] %></p>
 
   <p><%= @memo[:content] %></p>
+
+  <a href="/memos">メモ一覧</a>
+  <a href="/memos/<%= @memo[:id] %>/edit">変更</a>
 </body>
 </html>
