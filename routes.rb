@@ -3,6 +3,7 @@
 require 'sinatra'
 require 'sinatra/reloader'
 require 'json'
+include ERB::Util
 
 require_relative 'memo_class'
 
