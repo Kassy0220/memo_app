@@ -7,10 +7,28 @@ include ERB::Util
 
 require_relative 'memo_class'
 
-get '/memos' do
-  @memos = File.open('memos.json') do |file| 
-    FileTest.empty?('memos.json')? nil : JSON.parse(file.read, symbolize_names: true)
+helpers do 
+  def params_validation(path, title, content)
+    redirect to(path) if title.empty? || content.empty?
   end
+
+  def all_memos
+    File.open('memos.json') do |file| 
+      FileTest.empty?('memos.json')? nil : JSON.parse(file.read, symbolize_names: true)
+    end
+  end
+
+  def find_memo(memos, id)
+    memos.find { |memo| memo[:id] == id }
+  end
+
+  def save_memos(memos)
+    File.open('memos.json', 'w') { |file| JSON.dump(memos, file) }
+  end
+end
+
+get '/memos' do
+  @memos = all_memos
 
   erb :index
 end
@@ -19,55 +37,54 @@ get '/memos/new' do
   erb :new
 end
 
-post '/' do
-  # 入力された値が空でないかバリデーションを行う
-  redirect to("/memos/new") if params[:title].empty? || params[:content].empty?
+post '/memos' do
+  params_validation("/memos/new", params[:title], params[:content])
 
   memo = Memo.new(params[:title], params[:content])
   File.open('memos.json') do |file|
     # メモ格納ファイルが空の場合は、空配列を用意する
-    memo_array = FileTest.empty?('memos.json')? [] : JSON.parse(file.read, symbolize_names: true)
+    memos = FileTest.empty?('memos.json')? [] : JSON.parse(file.read, symbolize_names: true)
     memo_hash = {id: memo.id, title: memo.title, content: memo.content, created_at: memo.created_at, updated_at: memo.updated_at}
-    memo_array << memo_hash
-    File.open('memos.json', 'w') { |file| JSON.dump(memo_array, file) }
+    memos << memo_hash
+    save_memos(memos)
   end
 
   redirect to("/memos/#{memo.id}")
 end
 
-get '/memos/:memo_id' do
-  memos = File.open('memos.json') { |file| JSON.parse(file.read, symbolize_names: true) }
-  @memo = memos.find { |memo| memo[:id] == params[:memo_id] }
+get '/memos/:id' do
+  memos = all_memos
+  @memo = find_memo(memos, params[:id])
 
   erb :detail
 end
 
-get '/memos/:memo_id/edit' do
-  memos = File.open('memos.json') { |file| JSON.parse(file.read, symbolize_names: true) }
-  @memo = memos.find { |memo| memo[:id] == params[:memo_id] }
+get '/memos/:id/edit' do
+  memos = all_memos
+  @memo = find_memo(memos, params[:id])
 
   erb :edit
 end
 
-patch '/memos/:memo_id' do
-  redirect to("/memos/#{params[:memo_id]}") if params[:title].empty? || params[:content].empty?
+patch '/memos/:id' do
+  params_validation("/memos/#{params[:id]}", params[:title], params[:content])
 
-  memos = File.open('memos.json') { |file| JSON.parse(file.read, symbolize_names: true) }
+  memos = all_memos
   memos.each do |memo|
-    next unless memo[:id] == params[:memo_id]
+    next unless memo[:id] == params[:id]
     memo[:title] = params[:title]
     memo[:content] = params[:content]
     memo[:updated_at] = Time.now.strftime("%F %T")
   end
-  File.open('memos.json', 'w') { |file| JSON.dump(memos, file) }
+  save_memos(memos)
 
-  redirect to("/memos/#{params[:memo_id]}")
+  redirect to("/memos/#{params[:id]}")
 end
 
-delete '/memos/:memo_id' do
-  memos = File.open('memos.json') { |file| JSON.parse(file.read, symbolize_names: true) }
-  removed_memos = memos.delete_if{ |memo| memo[:id] == params[:memo_id]}
-  File.open('memos.json', 'w') { |file|  JSON.dump(removed_memos, file)}
+delete '/memos/:id' do
+  memos = all_memos
+  removed_memos = memos.delete_if{ |memo| memo[:id] == params[:id]}
+  save_memos(removed_memos)
 
   redirect to("/memos")
 end
