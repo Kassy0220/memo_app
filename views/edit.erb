@@ -2,24 +2,29 @@
 <html>
 <head>
   <meta charset="UTF-8">
+  <link rel="stylesheet" href="/style.css">
   <title>メモ作成</title>
 </head>
 <body>
-  <h1>メモ作成</h1>
+  <div class="container">
+    <h1>メモ編集</h1>
 
-  <form method="POST" action="/memos/<%= @memo[:id] %>">
-    <input type="hidden" name="_method" value="patch">
-    
-    <label for="title">タイトル</label>
-    <input type="text" name="title" id="title" required="required" value="<%= h @memo[:title] %>">
+    <div class="edit_form">
+      <form method="POST" action="/memos/<%= @memo[:id] %>">
+        <input type="hidden" name="_method" value="patch">
+        
+        <input type="text" name="title" id="title" required="required" value="<%= h @memo[:title] %>">
 
-    <label for="content">内容</label>
-    <textarea name="content" id="content" required="required"><%= h @memo[:content] %></textarea>
+        <textarea name="content" id="content" required="required"><%= h @memo[:content] %></textarea>
 
-    <input type="submit" value="変更">
-  </form>
+        <input type="submit" value="変更">
+      </form>
+    </div>
 
-  <a href="/memos">メモ一覧</a>
-  <a href="/memos/<%= @memo[:id] %>">戻る</a>
+    <nav>
+      <a href="/memos">メモ一覧</a>
+      <a href="/memos/<%= @memo[:id] %>">戻る</a>
+    </nav>
+  </div>
 </body>
 </html>

@@ -2,21 +2,26 @@
 <html>
 <head>
   <meta charset="UTF-8">
+  <link rel="stylesheet" href="/style.css">
   <title>メモ作成</title>
 </head>
 <body>
-  <h1>メモ作成</h1>
+  <div class="container">
+    <h1>メモ作成</h1>
 
-  <form method="POST" action="/">
-    <label for="title">タイトル</label>
-    <input type="text" name="title" id="title" required="required" placeholder="メモのタイトルを記述">
+    <div class="create_form">
+      <form method="POST" action="/">
+        <input type="text" name="title" id="title" required="required" placeholder="タイトル">
 
-    <label for="content">内容</label>
-    <textarea name="content" id="content" required="required" placeholder="メモの内容を記述"></textarea>
+        <textarea name="content" id="content" required="required" placeholder="メモの内容..."></textarea>
 
-    <input type="submit" value="作成">
-  </form>
+        <input type="submit" value="作成">
+      </form>
+    </div>
 
-  <a href="/memos">メモ一覧</a>
+    <nav>
+      <a href="/memos">メモ一覧</a>
+    </nav>
+  </div>
 </body>
 </html>
