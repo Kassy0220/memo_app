@@ -39,6 +39,7 @@ end
 
 get '/memos/new' do
   @title = 'メモ作成'
+
   erb :new
 end
 
@@ -65,16 +66,14 @@ end
 
 get '/memos/:id' do
   @title = 'メモ内容'
-  memos = all_memos
-  @memo = find_memo(memos, params[:id])
+  @memo = find_memo(all_memos, params[:id])
 
   erb @memo ? :detail : :notfound
 end
 
 get '/memos/:id/edit' do
   @title = 'メモ編集'
-  memos = all_memos
-  @memo = find_memo(memos, params[:id])
+  @memo = find_memo(all_memos, params[:id])
 
   erb @memo ? :edit : :notfound
 end
