@@ -56,14 +56,14 @@ get '/memos/:id' do
   memos = all_memos
   @memo = find_memo(memos, params[:id])
 
-  erb :detail
+  erb @memo? :detail : :notfound
 end
 
 get '/memos/:id/edit' do
   memos = all_memos
   @memo = find_memo(memos, params[:id])
 
-  erb :edit
+  erb @memo? :edit : :notfound
 end
 
 patch '/memos/:id' do
@@ -87,4 +87,8 @@ delete '/memos/:id' do
   save_memos(removed_memos)
 
   redirect to("/memos")
+end
+
+not_found do
+  erb :notfound
 end
