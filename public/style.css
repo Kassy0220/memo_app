@@ -431,6 +431,10 @@ li a {
   font-weight: bold;
 }
 
+.content {
+  white-space: pre-line;
+}
+
 .edit_button {
   display: flex;
 }
