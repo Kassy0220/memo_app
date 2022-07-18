@@ -1,23 +1,13 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8">
-  <link rel="stylesheet" href="/style.css">
-  <title>メモ一覧</title>
-</head>
-<body>
-  <div class="container">
-    <h1>メモ一覧</h1>
+<div class="container">
+  <h1>メモ一覧</h1>
 
-    <div class="create_button">
-      <a href="/memos/new">+ メモ作成</a>
-    </div>
-
-    <ul>
-    <% @memos&.each do |memo| %>
-      <li><a href="/memos/<%= memo[:id] %>"><%= h memo[:title] %></a></li>
-    <% end %>
-    </ul>
+  <div class="create_button">
+    <a href="/memos/new">+ メモ作成</a>
   </div>
-</body>
-</html>
+
+  <ul>
+  <% @memos&.each do |memo| %>
+    <li><a href="/memos/<%= memo[:id] %>"><%= h memo[:title] %></a></li>
+  <% end %>
+  </ul>
+</div>

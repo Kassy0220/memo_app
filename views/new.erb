@@ -1,27 +1,17 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8">
-  <link rel="stylesheet" href="/style.css">
-  <title>メモ作成</title>
-</head>
-<body>
-  <div class="container">
-    <h1>メモ作成</h1>
+<div class="container">
+  <h1>メモ作成</h1>
 
-    <div class="create_form">
-      <form method="POST" action="/memos">
-        <input type="text" name="title" id="title" required="required" placeholder="タイトル">
+  <div class="create_form">
+    <form method="POST" action="/memos">
+      <input type="text" name="title" id="title" required="required" placeholder="タイトル">
 
-        <textarea name="content" id="content" required="required" placeholder="メモの内容..."></textarea>
+      <textarea name="content" id="content" required="required" placeholder="メモの内容..."></textarea>
 
-        <input type="submit" value="作成">
-      </form>
-    </div>
-
-    <nav>
-      <a href="/memos">メモ一覧</a>
-    </nav>
+      <input type="submit" value="作成">
+    </form>
   </div>
-</body>
-</html>
+
+  <nav>
+    <a href="/memos">メモ一覧</a>
+  </nav>
+</div>

@@ -28,12 +28,14 @@ helpers do
 end
 
 get '/memos' do
+  @title = 'メモ一覧'
   @memos = all_memos
 
   erb :index
 end
 
 get '/memos/new' do
+  @title = 'メモ作成'
   erb :new
 end
 
@@ -53,6 +55,7 @@ post '/memos' do
 end
 
 get '/memos/:id' do
+  @title = 'メモ内容'
   memos = all_memos
   @memo = find_memo(memos, params[:id])
 
@@ -60,6 +63,7 @@ get '/memos/:id' do
 end
 
 get '/memos/:id/edit' do
+  @title = 'メモ編集'
   memos = all_memos
   @memo = find_memo(memos, params[:id])
 
@@ -90,5 +94,6 @@ delete '/memos/:id' do
 end
 
 not_found do
+  @title = 'Error 404 (Not Found)'
   erb :notfound
 end
