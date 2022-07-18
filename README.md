@@ -10,19 +10,24 @@
 
 最初に、リモートリポジトリからローカルへダウンロードします。
 
-`git clone https://github.com/Kassy0220/memo_app`
+```
+git clone https://github.com/Kassy0220/memo_app
+```
 
 作成されたメモアプリのディレクトリに移動し、アプリを実行するために必要なGemをダウンロードするコマンドを実行します。
 
-`cd memo_app`
-
-`bundle install`
+```
+$ cd memo_app
+$ bundle install
+```
 
 以上でアプリを実行する準備が整いました。
 
 ターミナル上で次のコマンドを実行して、メモアプリを起動しましょう。
 
-`bundle exec ruby memo.rb`
+```
+$ bundle exec ruby memo.rb
+```
 
 ブラウザを起動し、次のURLにアクセスします。
 
