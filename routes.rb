@@ -3,18 +3,21 @@
 require 'sinatra'
 require 'sinatra/reloader'
 require 'json'
-include ERB::Util
 
 require_relative 'memo_class'
 
-helpers do 
+helpers do
+  def h(text)
+    Rack::Utils.escape_html(text)
+  end
+
   def params_validation(path, title, content)
     redirect to(path) if title.empty? || content.empty?
   end
 
   def all_memos
-    File.open('memos.json') do |file| 
-      FileTest.empty?('memos.json')? nil : JSON.parse(file.read, symbolize_names: true)
+    File.open('memos.json') do |file|
+      FileTest.empty?('memos.json') ? nil : JSON.parse(file.read, symbolize_names: true)
     end
   end
 
@@ -40,13 +43,19 @@ get '/memos/new' do
 end
 
 post '/memos' do
-  params_validation("/memos/new", params[:title], params[:content])
+  params_validation('/memos/new', params[:title], params[:content])
 
   memo = Memo.new(params[:title], params[:content])
+  id = memo.id
+  title = memo.title
+  content = memo.content
+  created_at = memo.created_at
+  updated_at = memo.updated_at
+
   File.open('memos.json') do |file|
     # メモ格納ファイルが空の場合は、空配列を用意する
-    memos = FileTest.empty?('memos.json')? [] : JSON.parse(file.read, symbolize_names: true)
-    memo_hash = {id: memo.id, title: memo.title, content: memo.content, created_at: memo.created_at, updated_at: memo.updated_at}
+    memos = FileTest.empty?('memos.json') ? [] : JSON.parse(file.read, symbolize_names: true)
+    memo_hash = { id: id, title: title, content: content, created_at: created_at, updated_at: updated_at }
     memos << memo_hash
     save_memos(memos)
   end
@@ -59,7 +68,7 @@ get '/memos/:id' do
   memos = all_memos
   @memo = find_memo(memos, params[:id])
 
-  erb @memo? :detail : :notfound
+  erb @memo ? :detail : :notfound
 end
 
 get '/memos/:id/edit' do
@@ -67,7 +76,7 @@ get '/memos/:id/edit' do
   memos = all_memos
   @memo = find_memo(memos, params[:id])
 
-  erb @memo? :edit : :notfound
+  erb @memo ? :edit : :notfound
 end
 
 patch '/memos/:id' do
@@ -76,9 +85,10 @@ patch '/memos/:id' do
   memos = all_memos
   memos.each do |memo|
     next unless memo[:id] == params[:id]
+
     memo[:title] = params[:title]
     memo[:content] = params[:content]
-    memo[:updated_at] = Time.now.strftime("%F %T")
+    memo[:updated_at] = Time.now.strftime('%F %T')
   end
   save_memos(memos)
 
@@ -87,10 +97,10 @@ end
 
 delete '/memos/:id' do
   memos = all_memos
-  removed_memos = memos.delete_if{ |memo| memo[:id] == params[:id]}
+  removed_memos = memos.delete_if { |memo| memo[:id] == params[:id] }
   save_memos(removed_memos)
 
-  redirect to("/memos")
+  redirect to('/memos')
 end
 
 not_found do
