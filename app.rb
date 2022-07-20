@@ -6,6 +6,8 @@ require 'json'
 
 require_relative 'memo'
 
+MEMO_FILE = 'memos.json'
+
 helpers do
   def h(text)
     Rack::Utils.escape_html(text)
@@ -16,7 +18,7 @@ helpers do
   end
 
   def all_memos
-    File.open('memos.json') do |file|
+    File.open(MEMO_FILE) do |file|
       FileTest.empty?(file) ? [] : JSON.parse(file.read, symbolize_names: true)
     end
   end
@@ -26,7 +28,7 @@ helpers do
   end
 
   def save_memos(memos)
-    File.open('memos.json', 'w') { |file| JSON.dump(memos, file) }
+    File.open(MEMO_FILE, 'w') { |file| JSON.dump(memos, file) }
   end
 end
 
