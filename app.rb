@@ -17,7 +17,7 @@ helpers do
 
   def all_memos
     File.open('memos.json') do |file|
-      FileTest.empty?('memos.json') ? nil : JSON.parse(file.read, symbolize_names: true)
+      FileTest.empty?(file) ? [] : JSON.parse(file.read, symbolize_names: true)
     end
   end
 
