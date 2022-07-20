@@ -49,16 +49,11 @@ post '/memos' do
   params_validation('/memos/new', params[:title], params[:content])
 
   memo = Memo.new(params[:title], params[:content])
-  id = memo.id
-  title = memo.title
-  content = memo.content
-  created_at = memo.created_at
-  updated_at = memo.updated_at
 
   File.open('memos.json') do |file|
     # メモ格納ファイルが空の場合は、空配列を用意する
     memos = FileTest.empty?('memos.json') ? [] : JSON.parse(file.read, symbolize_names: true)
-    memo_hash = { id: id, title: title, content: content, created_at: created_at, updated_at: updated_at }
+    memo_hash = memo.to_hash
     memos << memo_hash
     save_memos(memos)
   end
