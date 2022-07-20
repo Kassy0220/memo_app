@@ -4,7 +4,7 @@
   <div class="edit_form">
     <form method="POST" action="/memos/<%= @memo[:id] %>">
       <input type="hidden" name="_method" value="patch">
-      
+
       <input type="text" name="title" id="title" required="required" value="<%= h @memo[:title] %>">
 
       <textarea name="content" id="content" required="required"><%= h @memo[:content] %></textarea>
