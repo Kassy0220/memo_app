@@ -2,12 +2,12 @@
   <h1>メモ編集</h1>
 
   <div class="edit_form">
-    <form method="POST" action="/memos/<%= @memo[:id] %>">
+    <form method="POST" action="/memos/<%= @memo['id'] %>">
       <input type="hidden" name="_method" value="patch">
 
-      <input type="text" name="title" id="title" required="required" value="<%= h @memo[:title] %>">
+      <input type="text" name="title" id="title" required="required" value="<%= h @memo['title'] %>">
 
-      <textarea name="content" id="content" required="required"><%= h @memo[:content] %></textarea>
+      <textarea name="content" id="content" required="required"><%= h @memo['content'] %></textarea>
 
       <input type="submit" value="変更">
     </form>
@@ -15,6 +15,6 @@
 
   <nav>
     <a href="/memos">メモ一覧</a>
-    <a href="/memos/<%= @memo[:id] %>">戻る</a>
+    <a href="/memos/<%= @memo['id'] %>">戻る</a>
   </nav>
 </div>

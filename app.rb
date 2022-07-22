@@ -29,17 +29,28 @@ helpers do
     end
   end
 
-  def find_memo(memos, id)
-    # TODO: SQLに書き換え
-    memos.find { |memo| memo[:id] == id }
+  def find_memo(id)
+    prepared = "SELECT * FROM memos WHERE id = $1;"
+    connection.prepare("find_memo", prepared)
+    params = [id]
+
+    connection.exec_prepared("find_memo", params) do |result|
+      result.each.with_object([]) do |row, array|
+        array << row
+      end
+    end
   end
 
   def save_memos(memo_hash)
-    prepared = "INSERT INTO memos (title, content, created_at, updated_at) VALUES ($1, $2, $3, $4);"
+    prepared = "INSERT INTO memos (title, content, created_at, updated_at) VALUES ($1, $2, $3, $4) RETURNING id;"
     connection.prepare("create_memo", prepared)
     params = [memo_hash[:title], memo_hash[:content], memo_hash[:created_at], memo_hash[:updated_at]]
 
-    connection.exec_prepared("create_memo", params)
+    connection.exec_prepared("create_memo", params) do |result|
+      result.each.with_object([]) do |row, array|
+        array << row
+      end
+    end
   end
 end
 
@@ -62,21 +73,22 @@ post '/memos' do
   memo = Memo.new(params[:title], params[:content])
   memo_hash = memo.to_hash
 
-  save_memos(memo_hash)
+  # 作成されたメモのIDを受け取る
+  memo_id = save_memos(memo_hash)[0]['id'].to_i
 
-  redirect to("/memos/#{memo.id}")
+  redirect to("/memos/#{memo_id}")
 end
 
 get '/memos/:id' do
   @title = 'メモ内容'
-  @memo = find_memo(all_memos, params[:id])
+  @memo = find_memo(params[:id])[0]
 
   erb @memo ? :detail : :notfound
 end
 
 get '/memos/:id/edit' do
   @title = 'メモ編集'
-  @memo = find_memo(all_memos, params[:id])
+  @memo = find_memo(params[:id])[0]
 
   erb @memo ? :edit : :notfound
 end
