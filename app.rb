@@ -3,10 +3,9 @@
 require 'sinatra'
 require 'sinatra/reloader'
 require 'json'
+require 'pg'
 
 require_relative 'memo'
-
-MEMO_FILE = 'memos.json'
 
 helpers do
   def h(text)
@@ -17,18 +16,30 @@ helpers do
     redirect to(path) if title.empty? || content.empty?
   end
 
+  def connection
+    @conn ||= PG.connect(dbname: 'memo_app')
+  end
+
   def all_memos
-    File.open(MEMO_FILE) do |file|
-      FileTest.empty?(file) ? [] : JSON.parse(file.read, symbolize_names: true)
+    memos = []
+    connection.exec('SELECT * FROM memos;') do |result|
+      result.each.with_object(memos) do |row, memos|
+        memos << row
+      end
     end
   end
 
   def find_memo(memos, id)
+    # TODO: SQLに書き換え
     memos.find { |memo| memo[:id] == id }
   end
 
-  def save_memos(memos)
-    File.open(MEMO_FILE, 'w') { |file| JSON.dump(memos, file) }
+  def save_memos(memo_hash)
+    prepared = "INSERT INTO memos (title, content, created_at, updated_at) VALUES ($1, $2, $3, $4);"
+    connection.prepare("create_memo", prepared)
+    params = [memo_hash[:title], memo_hash[:content], memo_hash[:created_at], memo_hash[:updated_at]]
+
+    connection.exec_prepared("create_memo", params)
   end
 end
 
@@ -51,9 +62,7 @@ post '/memos' do
   memo = Memo.new(params[:title], params[:content])
   memo_hash = memo.to_hash
 
-  memos = all_memos
-  memos << memo_hash
-  save_memos(memos)
+  save_memos(memo_hash)
 
   redirect to("/memos/#{memo.id}")
 end
