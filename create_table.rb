@@ -14,3 +14,4 @@ sql = <<SQL
 SQL
 
 conn.exec(sql)
+conn.finish
