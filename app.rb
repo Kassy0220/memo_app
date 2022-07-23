@@ -57,11 +57,7 @@ helpers do
     connection.prepare("update_memo", prepared)
     params = [title, content, Time.now.strftime('%F %T'), id]
 
-    connection.exec_prepared("update_memo", params) do |result|
-      result.each.with_object([]) do |row, array|
-        array << row
-      end
-    end
+    connection.exec_prepared("update_memo", params)
   end
 
   def delete_memo(id)
