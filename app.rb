@@ -52,6 +52,18 @@ helpers do
       end
     end
   end
+
+  def update_memo(title, content, id)
+    prepared = "UPDATE memos SET title = $1, content = $2, updated_at = $3 WHERE id = $4;"
+    connection.prepare("update_memo", prepared)
+    params = [title, content, Time.now.strftime('%F %T'), id]
+
+    connection.exec_prepared("update_memo", params) do |result|
+      result.each.with_object([]) do |row, array|
+        array << row
+      end
+    end
+  end
 end
 
 get '/memos' do
@@ -96,15 +108,7 @@ end
 patch '/memos/:id' do
   params_validation("/memos/#{params[:id]}", params[:title], params[:content])
 
-  memos = all_memos
-  memos.each do |memo|
-    next unless memo[:id] == params[:id]
-
-    memo[:title] = params[:title]
-    memo[:content] = params[:content]
-    memo[:updated_at] = Time.now.strftime('%F %T')
-  end
-  save_memos(memos)
+  update_memo(params[:title], params[:content], params[:id])
 
   redirect to("/memos/#{params[:id]}")
 end
