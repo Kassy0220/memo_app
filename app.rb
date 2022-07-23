@@ -29,11 +29,11 @@ helpers do
   end
 
   def find_memo(id)
-    prepared = "SELECT * FROM memos WHERE id = $1;"
-    connection.prepare("find_memo", prepared)
+    sql = 'SELECT * FROM memos WHERE id = $1;'
+    connection.prepare('find', sql)
     params = [id]
 
-    connection.exec_prepared("find_memo", params) do |result|
+    connection.exec_prepared('find', params) do |result|
       result.each.with_object([]) do |row, array|
         array << row
       end
@@ -41,11 +41,11 @@ helpers do
   end
 
   def save_memos(memo_hash)
-    prepared = "INSERT INTO memos (title, content, created_at, updated_at) VALUES ($1, $2, $3, $4) RETURNING id;"
-    connection.prepare("create_memo", prepared)
+    sql = 'INSERT INTO memos (title, content, created_at, updated_at) VALUES ($1, $2, $3, $4) RETURNING id;'
+    connection.prepare('create', sql)
     params = [memo_hash[:title], memo_hash[:content], memo_hash[:created_at], memo_hash[:updated_at]]
 
-    connection.exec_prepared("create_memo", params) do |result|
+    connection.exec_prepared('create', params) do |result|
       result.each.with_object([]) do |row, array|
         array << row
       end
@@ -53,19 +53,19 @@ helpers do
   end
 
   def update_memo(title, content, id)
-    prepared = "UPDATE memos SET title = $1, content = $2, updated_at = $3 WHERE id = $4;"
-    connection.prepare("update_memo", prepared)
+    sql = 'UPDATE memos SET title = $1, content = $2, updated_at = $3 WHERE id = $4;'
+    connection.prepare('update', sql)
     params = [title, content, Time.now.strftime('%F %T'), id]
 
-    connection.exec_prepared("update_memo", params)
+    connection.exec_prepared('update', params)
   end
 
   def delete_memo(id)
-    prepared = "DELETE FROM memos WHERE id = $1;"
-    connection.prepare("delete_memo", prepared)
+    sql = 'DELETE FROM memos WHERE id = $1;'
+    connection.prepare('delete', sql)
     params = [id]
 
-    connection.exec_prepared("delete_memo", params)
+    connection.exec_prepared('delete', params)
   end
 end
 
