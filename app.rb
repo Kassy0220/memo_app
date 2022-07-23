@@ -63,6 +63,14 @@ helpers do
       end
     end
   end
+
+  def delete_memo(id)
+    prepared = "DELETE FROM memos WHERE id = $1;"
+    connection.prepare("delete_memo", prepared)
+    params = [id]
+
+    connection.exec_prepared("delete_memo", params)
+  end
 end
 
 get '/memos' do
@@ -113,9 +121,7 @@ patch '/memos/:id' do
 end
 
 delete '/memos/:id' do
-  memos = all_memos
-  removed_memos = memos.delete_if { |memo| memo[:id] == params[:id] }
-  save_memos(removed_memos)
+  delete_memo(params[:id])
 
   redirect to('/memos')
 end
