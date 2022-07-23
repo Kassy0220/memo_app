@@ -21,7 +21,10 @@ helpers do
   end
 
   def all_memos
-    connection.exec('SELECT * FROM memos ORDER BY id ASC;') do |result|
+    sql = 'SELECT * FROM memos ORDER BY id ASC;'
+    connection.prepare('select', sql)
+
+    connection.exec_prepared('select') do |result|
       result.each.with_object([]) do |row, array|
         array << row
       end
