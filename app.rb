@@ -21,10 +21,9 @@ helpers do
   end
 
   def all_memos
-    memos = []
     connection.exec('SELECT * FROM memos;') do |result|
-      result.each.with_object(memos) do |row, memos|
-        memos << row
+      result.each.with_object([]) do |row, array|
+        array << row
       end
     end
   end
