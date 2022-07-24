@@ -2,11 +2,14 @@
 
 require 'sinatra'
 require 'sinatra/reloader'
+require 'sinatra/flash'
 require 'json'
 require 'pg'
 
 require_relative 'memo'
 require_relative 'helpers/helper'
+
+enable :sessions
 
 get '/memos' do
   @title = 'メモ一覧'
@@ -29,6 +32,7 @@ post '/memos' do
 
   # 作成されたメモのIDを受け取る
   memo_id = save_memo(memo_hash)[0]['id'].to_i
+  flash[:success] = 'メモを作成しました'
 
   redirect to("/memos/#{memo_id}")
 end
@@ -51,12 +55,14 @@ patch '/memos/:id' do
   params_validation("/memos/#{params[:id]}", params[:title], params[:content])
 
   update_memo(params[:title], params[:content], params[:id])
+  flash[:success] = 'メモを更新しました'
 
   redirect to("/memos/#{params[:id]}")
 end
 
 delete '/memos/:id' do
   delete_memo(params[:id])
+  flash[:success] = 'メモを削除しました'
 
   redirect to('/memos')
 end

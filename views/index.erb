@@ -1,6 +1,12 @@
 <div class="container">
   <h1>メモ一覧</h1>
 
+  <% if flash[:success] %>
+  <div class="flash">
+    <p id="success"><%= flash[:success] %></p>
+  </div>
+  <% end %>
+
   <div class="create_button">
     <a href="/memos/new">+ メモ作成</a>
   </div>

@@ -6,3 +6,4 @@ gem "sinatra"
 gem "webrick"
 gem 'sinatra-contrib'
 gem 'pg'
+gem 'sinatra-flash'
