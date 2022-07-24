@@ -13,15 +13,7 @@ enable :sessions
 
 get '/memos' do
   @title = 'メモ一覧'
-
-  sql = 'SELECT * FROM memos ORDER BY id ASC;'
-  connection.prepare('select', sql)
-
-  @memos = connection.exec_prepared('select') do |result|
-    result.each.with_object([]) do |row, array|
-      array << row
-    end
-  end
+  @memos = all_memos
 
   erb :index
 end
@@ -38,17 +30,8 @@ post '/memos' do
   memo = Memo.new(params[:title], params[:content])
   memo_hash = memo.to_hash
 
-  sql = 'INSERT INTO memos (title, content, created_at, updated_at) VALUES ($1, $2, $3, $4) RETURNING id;'
-  connection.prepare('create', sql)
-  parameters = [memo_hash[:title], memo_hash[:content], memo_hash[:created_at], memo_hash[:updated_at]]
-
-  sql_result = connection.exec_prepared('create', parameters) do |result|
-    result.each.with_object([]) do |row, array|
-      array << row
-    end
-  end
-  # 作成されたメモのIDを受け取る
-  memo_id = sql_result[0]['id'].to_i
+  # メモを作成し、作成したメモのIDを受け取る
+  memo_id = create_memo(memo_hash)[0]['id'].to_i
   flash[:success] = 'メモを作成しました'
 
   redirect to("/memos/#{memo_id}")
@@ -71,22 +54,14 @@ end
 patch '/memos/:id' do
   params_validation("/memos/#{params[:id]}", params[:title], params[:content])
 
-  sql = 'UPDATE memos SET title = $1, content = $2, updated_at = $3 WHERE id = $4;'
-  connection.prepare('update', sql)
-  parameters = [params[:title], params[:content], Time.now.strftime('%F %T'), params[:id]]
-
-  connection.exec_prepared('update', parameters)
+  update_memo(params[:title], params[:content], params[:id])
   flash[:success] = 'メモを更新しました'
 
   redirect to("/memos/#{params[:id]}")
 end
 
 delete '/memos/:id' do
-  sql = 'DELETE FROM memos WHERE id = $1;'
-  connection.prepare('delete', sql)
-  parameter = [params[:id]]
-
-  connection.exec_prepared('delete', parameter)
+  delete_memo(params[:id])
   flash[:success] = 'メモを削除しました'
 
   redirect to('/memos')
