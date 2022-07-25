@@ -31,32 +31,28 @@ DBの設定は、次の手順で行います。
 4. テーブルを作成する
 
 1. PostgreSQLのダウンロード
-以下のサイトを参考に、お使いのOSに合わせてダウンロードを行なってください。
+以下のサイトを参考に、お使いのOSに合わせてダウンロードを行ってください。
 [ダウンロード \| 日本PostgreSQLユーザ会](https://www.postgresql.jp/download)
 
 2. ユーザの作成
 ダウンロードが完了したら、コマンドライン上で次のコマンドを実行し、DBにアクセスするユーザを作成します。
+
+以下のコマンドを実行して、PostgreSQLの対話型ターミナルを起動します。
 ```
-$ createuser --interactive memo_user
+$ psql -U${USER} postgres
 ```
-コマンドを実行すると、Yes/Noの入力を促されます。
-DBを作成する必要があるため次の項目はYesを選択し、それ以外の項目はNoを選択してください。
+
+プロンプトが`postgres=#`に変わるので、次のコマンドを実行してDBにアクセスするユーザを作成します。
 ```
-Shall the new role be allowed to create databases? (y/n) 
+postgres=# create user memo_user; 
 ```
 
 3. DBの作成
 ユーザを作成したら、次はDBの作成を行いましょう。
-先ほど作成したユーザで、PostgreSQLの対話的ターミナルを起動します。
+同じくPostgreSQLの対話型ターミナル上で次のコマンドを実行します。
 
 ```
-psql -U memo_user
-```
-
-プロンプトが`sample=>`に変わるので、次の文を実行し、DBを作成します。
-
-```
-sample => CREATE DATABASE memo_app;
+postgres=# create database memo_app owner memo_user;
 ```
 
 DBの作成は完了しました。
