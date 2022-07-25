@@ -2,7 +2,7 @@
 
 require 'pg'
 
-conn = PG.connect(dbname: 'memo_app')
+conn = PG.connect(user: 'memo_user', dbname: 'memo_app')
 
 sql = <<SQL
   CREATE TABLE Memos

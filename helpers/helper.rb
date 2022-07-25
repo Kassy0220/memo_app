@@ -12,7 +12,7 @@ helpers do
   end
 
   def connection
-    @connection ||= PG.connect(dbname: 'memo_app')
+    @connection ||= PG.connect(user: 'memo_user', dbname: 'memo_app')
   end
 end
 
