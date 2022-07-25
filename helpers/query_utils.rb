@@ -6,9 +6,7 @@ module QueryUtils
     connection.prepare('select', sql)
 
     connection.exec_prepared('select') do |result|
-      result.each.with_object([]) do |row, array|
-        array << row
-      end
+      to_array(result)
     end
   end
 
@@ -18,9 +16,7 @@ module QueryUtils
     params = [id]
 
     connection.exec_prepared('find', params) do |result|
-      result.each.with_object([]) do |row, array|
-        array << row
-      end
+      to_array(result)
     end
   end
 
@@ -30,9 +26,7 @@ module QueryUtils
     params = [memo_hash[:title], memo_hash[:content], memo_hash[:created_at], memo_hash[:updated_at]]
 
     connection.exec_prepared('create', params) do |result|
-      result.each.with_object([]) do |row, array|
-        array << row
-      end
+      to_array(result)
     end
   end
 
@@ -50,5 +44,11 @@ module QueryUtils
     params = [id]
 
     connection.exec_prepared('delete', params)
+  end
+
+  def to_array(result)
+    result.each.with_object([]) do |row, array|
+      array << row
+    end
   end
 end
