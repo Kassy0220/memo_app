@@ -20,10 +20,10 @@ module QueryUtils
     end
   end
 
-  def create_memo(memo_hash)
+  def create_memo(memo)
     sql = 'INSERT INTO memos (title, content, created_at, updated_at) VALUES ($1, $2, $3, $4) RETURNING id;'
     connection.prepare('create', sql)
-    params = [memo_hash[:title], memo_hash[:content], memo_hash[:created_at], memo_hash[:updated_at]]
+    params = [memo.title, memo.content, memo.created_at, memo.updated_at]
 
     connection.exec_prepared('create', params) do |result|
       # 作成したメモのIDを返す

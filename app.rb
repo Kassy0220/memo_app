@@ -28,10 +28,8 @@ post '/memos' do
   params_validation('/memos/new', params[:title], params[:content])
 
   memo = Memo.new(params[:title], params[:content])
-  memo_hash = memo.to_hash
-
   # メモを作成し、作成したメモのIDを受け取る
-  memo_id = create_memo(memo_hash)
+  memo_id = create_memo(memo)
   flash[:success] = 'メモを作成しました'
 
   redirect to("/memos/#{memo_id}")
