@@ -16,7 +16,7 @@ module QueryUtils
     params = [id]
 
     connection.exec_prepared('find', params) do |result|
-      to_array(result)
+      to_array(result).first
     end
   end
 
