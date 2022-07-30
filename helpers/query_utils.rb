@@ -26,7 +26,8 @@ module QueryUtils
     params = [memo_hash[:title], memo_hash[:content], memo_hash[:created_at], memo_hash[:updated_at]]
 
     connection.exec_prepared('create', params) do |result|
-      to_array(result)
+      # 作成したメモのIDを返す
+      to_array(result).first['id'].to_i
     end
   end
 

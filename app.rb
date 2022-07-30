@@ -31,7 +31,7 @@ post '/memos' do
   memo_hash = memo.to_hash
 
   # メモを作成し、作成したメモのIDを受け取る
-  memo_id = create_memo(memo_hash)[0]['id'].to_i
+  memo_id = create_memo(memo_hash)
   flash[:success] = 'メモを作成しました'
 
   redirect to("/memos/#{memo_id}")
