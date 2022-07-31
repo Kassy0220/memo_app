@@ -385,6 +385,14 @@ nav a {
   margin-left: 2em;
 }
 
+#success {
+  background-color: #cce5ff;
+  color: #004085;
+  text-align: center;
+  padding: 0.5em;
+  border-radius: 5px;
+}
+
 /** index.erb **/
 .create_button {
   width: 7em;

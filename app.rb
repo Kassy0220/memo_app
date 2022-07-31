@@ -2,35 +2,14 @@
 
 require 'sinatra'
 require 'sinatra/reloader'
+require 'sinatra/flash'
 require 'json'
+require 'pg'
 
 require_relative 'memo'
+require_relative 'helpers/helper'
 
-MEMO_FILE = 'memos.json'
-
-helpers do
-  def h(text)
-    Rack::Utils.escape_html(text)
-  end
-
-  def params_validation(path, title, content)
-    redirect to(path) if title.empty? || content.empty?
-  end
-
-  def all_memos
-    File.open(MEMO_FILE) do |file|
-      FileTest.empty?(file) ? [] : JSON.parse(file.read, symbolize_names: true)
-    end
-  end
-
-  def find_memo(memos, id)
-    memos.find { |memo| memo[:id] == id }
-  end
-
-  def save_memos(memos)
-    File.open(MEMO_FILE, 'w') { |file| JSON.dump(memos, file) }
-  end
-end
+enable :sessions
 
 get '/memos' do
   @title = 'メモ一覧'
@@ -49,25 +28,23 @@ post '/memos' do
   params_validation('/memos/new', params[:title], params[:content])
 
   memo = Memo.new(params[:title], params[:content])
-  memo_hash = memo.to_hash
+  # メモを作成し、作成したメモのIDを受け取る
+  memo_id = create_memo(memo)
+  flash[:success] = 'メモを作成しました'
 
-  memos = all_memos
-  memos << memo_hash
-  save_memos(memos)
-
-  redirect to("/memos/#{memo.id}")
+  redirect to("/memos/#{memo_id}")
 end
 
 get '/memos/:id' do
   @title = 'メモ内容'
-  @memo = find_memo(all_memos, params[:id])
+  @memo = find_memo(params[:id])
 
   erb @memo ? :detail : :notfound
 end
 
 get '/memos/:id/edit' do
   @title = 'メモ編集'
-  @memo = find_memo(all_memos, params[:id])
+  @memo = find_memo(params[:id])
 
   erb @memo ? :edit : :notfound
 end
@@ -75,23 +52,15 @@ end
 patch '/memos/:id' do
   params_validation("/memos/#{params[:id]}", params[:title], params[:content])
 
-  memos = all_memos
-  memos.each do |memo|
-    next unless memo[:id] == params[:id]
-
-    memo[:title] = params[:title]
-    memo[:content] = params[:content]
-    memo[:updated_at] = Time.now.strftime('%F %T')
-  end
-  save_memos(memos)
+  update_memo(params[:title], params[:content], params[:id])
+  flash[:success] = 'メモを更新しました'
 
   redirect to("/memos/#{params[:id]}")
 end
 
 delete '/memos/:id' do
-  memos = all_memos
-  removed_memos = memos.delete_if { |memo| memo[:id] == params[:id] }
-  save_memos(removed_memos)
+  delete_memo(params[:id])
+  flash[:success] = 'メモを削除しました'
 
   redirect to('/memos')
 end
