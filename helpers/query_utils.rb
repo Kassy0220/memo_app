@@ -6,7 +6,7 @@ module QueryUtils
     connection.prepare('select', sql)
 
     connection.exec_prepared('select') do |result|
-      to_array(result)
+      result.to_a
     end
   end
 
@@ -16,7 +16,7 @@ module QueryUtils
     params = [id]
 
     connection.exec_prepared('find', params) do |result|
-      to_array(result).first
+      result.to_a.first
     end
   end
 
@@ -27,7 +27,7 @@ module QueryUtils
 
     connection.exec_prepared('create', params) do |result|
       # 作成したメモのIDを返す
-      to_array(result).first['id'].to_i
+      result.to_a.first['id'].to_i
     end
   end
 
@@ -45,11 +45,5 @@ module QueryUtils
     params = [id]
 
     connection.exec_prepared('delete', params)
-  end
-
-  def to_array(result)
-    result.each.with_object([]) do |row, array|
-      array << row
-    end
   end
 end
