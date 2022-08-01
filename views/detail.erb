@@ -1,15 +1,21 @@
 <div class="container">
   <h1>メモ内容</h1>
 
+  <% if flash[:success] %>
+  <div class="flash">
+    <p id="success"><%= flash[:success] %></p>
+  </div>
+  <% end %>
+
   <div class="memo_content">
-    <p class="title"><%= h @memo[:title] %></p>
-    <p class="content"><%= h @memo[:content] %></p>
+    <p class="title"><%= h @memo['title'] %></p>
+    <p class="content"><%= h @memo['content'] %></p>
   </div>
 
   <div class="edit_button">
-    <a href="/memos/<%= @memo[:id] %>/edit">変更</a>
+    <a href="/memos/<%= @memo['id'] %>/edit">変更</a>
 
-    <form method="POST" action="/memos/<%= @memo[:id] %>">
+    <form method="POST" action="/memos/<%= @memo['id'] %>">
       <input type="hidden" name="_method" value="delete">
       <input type="submit" value="削除">
     </form>
